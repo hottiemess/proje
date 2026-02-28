@@ -1,0 +1,74 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages, of course you can add more...
+\usepackage{xspace}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{subfiles}
+\usepackage{authblk}
+\usepackage[all]{hypcap}
+\usepackage{cleveref}
+\usepackage[autostyle=true]{csquotes}
+\usepackage[ISO]{diffcoeff}
+
+
+% References
+\usepackage[
+    backend=biber,
+    natbib=true,
+    style=ieee,
+    url=false,
+    sorting=none,
+    maxbibnames=6,
+    minbibnames=6,
+    doi=false
+]{biblatex}
+\bibstyle{ieee}
+\bibliography{mybib}
+
+\usepackage{definitions}
+% \usepackage{general_defs}
+
+%% Title
+\title{Final Project: Optimisation for data fitting using the BFGS Algorithm}
+\date{Submission: 04.03.2026}
+\selectlanguage{english}
+\author[1]{\textbf{\firstAuthor}}
+\author[ ]{\secondAuthor}
+\affil[1]{\mailref{\firstMail}, \immatriculation}
+
+\begin{document}
+    \maketitle
+
+
+
+    \begin{@twocolumnfalse}
+        \begin{abstract}
+            \subfile{abstract}
+        \end{abstract}
+    \end{@twocolumnfalse}
+
+
+    \section{Introduction}\label{sec:introduction}
+% Start your report by introducing the problem... Also, don't forget citations, e.g.~\cite{ParticleDataGroup:2024cfk}
+    \input{introduction}
+
+    \input{optimisation}
+
+    \input{results}
+
+    \printbibliography
+
+\end{document}

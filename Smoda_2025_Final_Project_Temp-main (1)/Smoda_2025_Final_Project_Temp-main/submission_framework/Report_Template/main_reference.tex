@@ -1,0 +1,89 @@
+%! Author = dominikfischer
+%! Date = 2026-02-11
+% Preamble
+% Die erste (unkommentierte) Zeile im Dokument legt immer die Dokumentklasse fest
+\documentclass[english, titlepage]{scrreprt}
+
+
+% Präambel
+% Einbinden von zusätzlichen Paketen.
+% Solche Dateien werden "style files" genannt mit Typ sty.
+% Im Folgenden wird die Datei 'pakete.sty' eingebunden.
+% mit 'pakete.sty' wird auch das Paket cleveref eingebunden; dieses sollte als letztes eingebunden werden
+\usepackage{listings}
+\usepackage{physics}
+\usepackage{pakete}
+\usepackage[Draft]{Praktikum}
+% dieses file definiert eigene listings-styles
+\usepackage{code_sources}
+\usepackage{chngcntr}
+\usepackage{rotating}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+
+
+% Abbildungen, Pfade zu den Verzeichnissen, welche die Abbildungen enthalten
+\graphicspath{{figs/matplotlib/}{figs/kafe2/}{figs/material/}{figs/}}
+
+% Literatur
+\addbibresource{mybib.bib}
+
+% diese zusätzlichen Setups sollten in ein eigenes "style file" ausgelagert werden
+% Deutsch als locale, wenn die Sprache Deutsch (ngerman) ist.
+
+
+% Titel, Autor und Datum
+\title{SmoDa Final Project}
+\subtitle{Implementation of BFGS algorithm for likelihood optimisation}
+\date{\today}
+\author{\firstAuthor\\
+Matrikelnummern: \immatriculation\\
+E-Mail: \mailref{\firstMail}}
+
+% Draft version - add the word DRAFT on the cover pages
+\ifthenelse{\equal{\ThesisVersion}{Draft}}{%
+    \usepackage{background}
+    \backgroundsetup{contents=DRAFT, color=blue!30}
+    \addto\extrasngerman{\backgroundsetup{contents=ENTWURF, color=blue!30}}
+    \addto\extrasgerman{\backgroundsetup{contents=ENTWURF, color=blue!30}}
+    \ifoot[\today{} \thistime]{\today{} \thistime}
+}{
+}
+
+\usepackage{definitions}
+\usepackage{praktikum_defs}
+
+% Dokumentanfang
+\begin{document}
+    % \definechangesauthor[name=Dominik]{DF}
+    % \definechangesauthor[name=Melis]{M}
+
+    \maketitle
+    \makeglossaries
+
+    \pagenumbering{roman}
+    \tableofcontents
+    \clearpage
+    \pagenumbering{arabic}
+
+
+    \chapter{Demo Report}\label{ch:demo-report}
+
+
+    \section{Introduction}\label{sec:introduction}
+% Start your report by introducing the problem... Also, don't forget citations, e.g.~\cite{ParticleDataGroup:2024cfk}
+    \input{introduction}
+
+    \input{optimisation}
+
+    \input{results}
+% Verzeichnisse für Abbildungen, Tabellen und Code-Beispiele
+    \appendix
+    \listoffigures
+    \listoftables
+
+%Literaturverzeichnis
+    \printbibliography[heading=bibintoc]
+
+\end{document}

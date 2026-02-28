@@ -1,0 +1,102 @@
+%! suppress = CommandAlreadyDefined
+%! Package = Praktikum
+%! Author = dominikfischer
+%! Date = 01.11.23
+
+\NeedsTeXFormat{LaTeX2e}[2015/01/01]
+\ProvidesPackage{Praktikum}[2024/05/09 dominikfischer's Package Praktikum]
+
+% Mathematik-Module, Erweiterung des Mathematik-Modus
+\RequirePackage{cancel}
+\RequirePackage{derivative}
+\RequirePackage{scrlayer-scrpage}
+\RequirePackage{scrdate,scrtime}
+\RequirePackage{ifthen}
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{
+    family=Praktikum,
+    prefix=Prakt@
+}
+
+\providecommand*{\ThesisVersion}{Draft}
+\providecommand*{\ThesisFloat}{Original}
+
+
+% handle some options
+\DeclareBoolOption[false]{Draft}
+\DeclareBoolOption[false]{Submit}
+\DeclareBoolOption[false]{Final}
+\DeclareBoolOption[false]{Glossary}
+\DeclareBoolOption[false]{Acronym}
+\DeclareBoolOption[false]{Advanced-Float}
+\DeclareStringOption{thesisversion}
+\ProcessKeyvalOptions*
+
+\ifthenelse{\boolean{Prakt@Submit}}{
+    \typeout{Praktikum: creating submission version}
+    \renewcommand*{\ThesisVersion}{Submit}
+}{}
+\ifthenelse{\boolean{Prakt@Final}}{
+    \typeout{Praktikum: creating submission version}
+    \renewcommand*{\ThesisVersion}{Final}
+}{}
+
+
+% handle todonotes
+\RequirePackage{marginnote}
+\ifthenelse{\equal{\ThesisVersion}{Draft}}{%
+    \RequirePackage[obeyFinal]{todonotes}
+}{
+    \RequirePackage[disable]{todonotes}
+}
+\let\Prakt@figure\figure
+\let\end@Prakt@figure\endfigure
+\let\Prakt@table\table
+\let\end@Prakt@table\endtable
+\newenvironment{alterFigure}[1][p]{\Prakt@figure[#1]\let\marginpar\marginnote}{\end@Prakt@figure}
+\newenvironment{alterTable}[1][p]{\Prakt@table[#1]\let\marginpar\marginnote}{\end@Prakt@table}
+\ifthenelse{\boolean{Prakt@Advanced-Float}}{%
+    \typeout{Praktikum: will redefine several float environments}
+    \renewenvironment{figure}[1][p]{\Prakt@figure[#1]\let\marginpar\marginnote}{\end@Prakt@figure}
+    \renewenvironment{table}[1][p]{\Prakt@table[#1]\let\marginpar\marginnote}{\end@Prakt@table}
+    \renewcommand*{\ThesisFloat}{Redefined}
+}{}
+
+\@ifpackagelater{siunitx}{2024/05/06}{\typeout{works}}{\typeout{does not work}}
+
+
+% handle Glossary
+\ifthenelse{\boolean{Prakt@Glossary}}{
+    \typeout{Praktikum: use and create a glossary}
+    \RequirePackage[toc,acronym]{glossaries}
+%\RequirePackage{glossaries-english}
+%\RequirePackage{glossaries-german}
+}{
+    \providecommand*{\newglossaryentry}[2]{\typeout{There was defined a new entry #1 and dropt it}}
+    \providecommand*{\gls}[1]{\typeout{There was used the glossary entry #1 and drop it}}
+    \let\Gls\gls
+    \providecommand*{\makeglossaries}{\typeout{ordered to make the glossary and drop it}}
+    \providecommand*{\printglossaries}{\typeout{print out glossaries and drop it}}
+}
+
+% some unit definitons
+% correct symbol for liters
+\addto\extrasngerman{\DeclareSIUnit\litre{l}}
+\addto\extrasgerman{\DeclareSIUnit\litre{l}}
+% correct different used forms for '\becquerel'
+\DeclareSIUnit\Bequerel{\becquerel}
+\DeclareSIUnit\Becuerel{\becquerel}
+% additional unit for Skalenteile
+\DeclareSIUnit\skt{Skt}
+\DeclareSIUnit\px{px}
+
+\let\originalFootnote\footnote
+\let\originalCite\cite
+\renewcommand{\footnote}{~\originalFootnote}
+\renewcommand{\cite}{~\originalCite}
+\addto\extrasngerman{\sisetup{locale = DE}}
+\addto\extrasamerican{\sisetup{locale = US}}
+\addto\extrasUSenglish{\sisetup{locale = US}}
+\addto\extrasbritish{\sisetup{locale = UK}}
+\addto\extrasUKenglish{\sisetup{locale = UK}}
+

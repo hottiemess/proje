@@ -1,0 +1,14 @@
+%! Author = dominikfischer
+%! Date = 2026-02-10
+
+\subsubsection{General aspects of BFGS}
+Considering the computational costs of the Newton algorithm, it is much more desirable to not calculate the exact hessian (or it's inverse) on every step of the iteration, but (calculate) only an approximation.
+The approximation must be chosen such that the convergence rate is not reduced too much\cite[176]{nonLinOptimerung}.
+This is exactly what is done by the BFGS algorithm.
+In case of the BFGS algorithm the current approximation of the (inverse) hessian is updated on each iterative step by using the newly gained information from this step.
+But, the BFGS update strategy needs to be seeded once by a \textbf{positive definite} matrix to start with.
+How, to choose such a seed?
+In the simplest case one could simply use the identity matrix for this task.
+To speed up convergence, we could seed the update strategy on first iteration by the exact inverse Hessian\footnote{This is still to be calculated numerically.}
+% TODO: fix this; I'm not sure whether this citation is correct!
+This last suggestion should have convergence properties similar to the Newton-Raphson procedure, at much lower computational costs\cite{Nocedal, nonLinOptimerung}.

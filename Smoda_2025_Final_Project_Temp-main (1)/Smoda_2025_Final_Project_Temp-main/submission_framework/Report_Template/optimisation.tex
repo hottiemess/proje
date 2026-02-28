@@ -1,0 +1,24 @@
+%! Author = dominikfischer
+%! Date = 2026-02-10
+
+
+\section{Implementation of the Optimisation}\label{sec:implementation}
+
+\subsection{General Aspects}\label{ssec:general_optimum}
+\input{general_procedure}
+
+% TODO: this sentence does not make sense in the current context!
+The BFGS algorithm is a so called quasi-newton algorithm.
+So it could be necessary to talk first about the newton algorithm.
+
+\input{implementation/newton_derivation}
+
+\subsection{BFGS}\label{ssec:bfgs}
+% TODO: redistribute this parts along the different files such that the detailed version could be changed simply by commenting here.
+\input{implementation/bfgs_short}
+% TODO: shortcut code for the bfgs derivation?
+\input{implementation/bfgs_derivation}
+\input{implementation/bfgs_implementation}
+
+\subsection{Line search}\label{ssec:impl:line}
+\input{implementation/linesearch}

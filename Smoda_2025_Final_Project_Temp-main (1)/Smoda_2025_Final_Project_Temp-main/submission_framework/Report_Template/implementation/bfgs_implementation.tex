@@ -1,0 +1,18 @@
+%! Author = dominikfischer
+%! Date = 2026-02-27
+
+\subsubsection{Implementation of BFGS}
+The implementation of the bfgs is the implementation of the function which calculates the current search direction.
+It is constructed such that it could accept an already computed gradient for the current point, e.g. from the run of the previous iterations line search.
+The actual procedure will depend on the choice of the algorithm.
+The \verb|newton| choice was already discussed a bit.
+We will concentrate here onto the different bfgs choices, as the traditional gradient descent procedures were implemented but are not the goal of this project.
+The algorithm will remeber the last computed hessian.
+If no hessian is computed so far, e.g.\ it is the first iteration, then a seeding value of the hessian is required.
+The different choices are as follows:\footnote{The framework minimizer function accepts a keyword 'algo', to specify the algorithm to use. We will give the keywords here with some explanation (At least some of the keywords)}
+\begin{description}
+    \item[bfgs simple] In this simplest possible seeding implementation, the inverse of the hessian is seeded by the identity of the corresponding dimension.
+    \item[bfgs quasi] The \verb|bfgs quasi| implementation uses the an approximation by the reciprocals of the second order derivatives at the start point of the iteration to seed the inverse hessian.
+    \item[bfgs] The \verb|bfgs| implementation will perform a full calculation of the hessian and invert it to seed the approximative inverse hesse matrix for the algorithm.
+\end{description}
+

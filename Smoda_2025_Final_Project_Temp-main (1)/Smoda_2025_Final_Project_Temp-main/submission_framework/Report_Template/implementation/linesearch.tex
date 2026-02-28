@@ -1,0 +1,115 @@
+%! Author = dominikfischer
+%! Date = 2026-02-21
+\subsubsection{General aspects}
+After finding suitable search direction and update strategies for these, we will need as a last step to estimate a suitable step for the iteration.
+To find the optimum of the function \(f\) in the search direction a line search is performed.
+An \textbf{exact} line search would be defined by \(\alpha_\text{k} = \arg\min f(\vec{x}_\text{k} + \alpha \vec{p}_\text{k})\).
+But such an exact procedure could be computational expensive in particular if performed on every step.
+So a tradeoff is necessary.
+On the other hand, for our purpose the use of the Armijo condition and the (strong) Wolfe condition should be sufficient.\cite[135-162]{Nocedal}
+The implementation of this iterative algorithm will be described in\cref{ssec:line:backtracking}.
+In the next section we will first consider conditions to be fulfilled by an \enquote{optimal} step size.
+
+\subsubsection{Conditions for a line search}
+As we will perform an inexact line search we will need to discuss conditions which will be satisfied by the inexact optimum.
+The simplest imaginable condition would be a significant decrease \(f(\vec{x}_\text{k} + \alpha^\text{(k)}\vec{p}_\text{k}) < f(\vec{x}_\text{k})\)\cite[32]{Nocedal}.
+But this will not be enough to ensure convergence.
+The following paragraphs will discuss well known conditions in use for line search algorithms and implemented for our own line search.
+
+\paragraph{Armijo condition}
+The Armijo condition should ensure a sufficient decrease of our function in the search direction.
+Therefore define first the local slope \(m = (\gradient f(\vec{x}))^\text{T}\vec{p}\).
+The decrease maybe controlled by a parameter \(c\).
+For estimating the decrease use the taylor expansion of our function to be optimised\cite{Armijo}\cite[108-113]{nonLinOptimerung}\cite[33-36]{Nocedal}:
+\begin{align}
+    f(\vec{x} + \alpha\cdot\vec{p}) \approx f(\vec{x}) + \alpha\cdot\gradient f \vec{p} + \order{\alpha^2}\\
+    \Rightarrow f(\vec{x})-f(\vec{x} + \alpha\cdot\vec{p}) = -(\gradient f\cdot\vec{p})\cdot\alpha = -\alpha m + \order{\alpha^2}\\
+    \Rightarrow f(\vec{x})-f(\vec{x} + \alpha\cdot\vec{p}) \geq -\alpha c m\label{eq:linesearch:armijo}
+\end{align}\footnote{The condition given bei Armijo uses the norm of the gradient, for the simplest implementation \(\vec{d} = -\grad f\) this equivalent to the stated condition.}
+This condition won't be enought to ensure sufficient decrease as it could be satisfied for all sufficiently small values.
+If the step size used gets to small the algorithm won't make any real process.
+This leads finally to a condition on the curvature\cite[33-36]{Nocedal}.
+
+\paragraph{Wolfe condition}
+In Addition to the merely Armijo-Condition the (strong) Wolfe condition could be used.
+% FIXME: I'm not sure whether this citation here is correctly. - Citation is correct but I originally meant to cite another book/paper
+According to\cite{Nocedal} these will also make sure that the step size is not too small and acts like a lower bound.
+The Wolfe condition is a requirement to the curvature along the line and minimising it\cite[117]{nonLinOptimerung}\cite[33-36]{Nocedal}:
+\begin{equation}
+    -\vec{p}_{\text{k}}^{\text{T}}\gradient f(\vec{x}_\text{k} + \alpha_\text{k}\vec{p}_\text{k}^\text{T}) \leq -c_2 \vec{p}_\text{k}^\text{T}\grad f(\vec{x}_\text{k}) = t_2\label{eq:linesearch:wolfe:condition}
+\end{equation}
+To fulfill both conditions at the same time it is necessary to have \(c_1 < c_2\) otherwise both conditions will contradict each other.
+W.r.t.\cite{Nocedal} we'll use the values \(c_1 = 1e-4\) and \(c_2 = \num{0.9}\) for the parameters.
+The Wolfe condition should ensure convergence of the gradient to zero.
+To prevent the line search algorithm to choose a much to small step size it is also possible to improve the Wolfe-condition by using the so-called \enquote{strong Wolfe condition}\cite[119]{nonLinOptimerung}:
+\begin{equation}
+    \abs{\grad f(\vec{x}+\alpha\vec{p})^\text{T}\vec{p}} \leq -c_2\grad f(\vec{x})^{\text{T}}\vec{p}\label{eq:linesearch:condition:strongwolfe}
+\end{equation}
+This condition should exclude points that are far away from stationary points for our line search.
+
+While trying to find a optimal step size the left-hand-side of\cref{eq:linesearch:wolfe:condition} gives some more information about the termination of this procedure\cite[33-36]{Nocedal}.
+If it is only slightly negative or even positive, we could not achieve any further process by this search direction and the line search should be terminated.\footnote{This could also be seen as sign to terminate the whole optimisation procedure.}
+% TODO: this here requires a citation
+In particular when using the BFGS algorithm to determine the search direction the curvature condition\cref{eq:linesearch:wolfe:condition, eq:linesearch:condition:strongwolfe} should be used to ensure that the approximated inverse hessian remains positive definite by the update strategy.
+
+\subsubsection{Improving the step size estimation}
+% TODO: this improvement needs still to be incorporated into the implementation of the line search algorithm!
+Reducing the current step size by certain factor/fraction is a quite simple mechanism to perform the estimation of the step size.
+But we could also use the knowledge that the step size problem could be solved analytically for a quadratic function\cite[103]{nonLinOptimerung}\cite[42-44]{Nocedal}:
+\begin{align}
+    f(\vec{x}) &= \frac{1}{2}\vec{x}^{\text{T}}Q\vec{x}+\vec{b}^{\text{T}}\vec{x}\nonumber\\
+    \alpha &= -\frac{(Q\overline{\vec{x}}+\vec{b})^\text{T}\vec{p}}{\vec{p}^\text{T}Q\vec{p}}\label{eq:perfect:step:size}
+\end{align}
+This could be used to seed the step size in the iteration of the approximate line search algorithm by approximating \(f\) locally by a quadratic function and apply this exact step size to this approximation of \(f\).
+After such a seed, it will still be necessary to check for the provided conditions and perform the usual line search algorithm if necessary.\cite[120-123]{nonLinOptimerung}
+The coefficients in the approximation of \(f\) are determined through the derivatives by mean of the taylor expansion.
+These improving procedure are called \enquote{quadratic interpolation}.
+The interpolation could be done according to Hermite\footnote{There also some other options for quadratic interpolation of the step size.} by defining the helper function \(h(t) = f(\vec{x}+t\cdot\vec{p})\) with the following Ansatz\cite[120-123]{nonLinOptimerung}.
+\begin{align}
+    p(t) &= k_0 + k_1\cdot (t-a) + k_2\cdot (t-a)^2\nonumber\\
+    &= h(a) + h'(a)(t-a) + \frac{h(b)-h(a)-h'(a)(b-a)}{(b-a)^2}(t-a)^2
+\end{align}
+The step size for the global minimum of \(p(t)\) is now
+\begin{equation}
+    \alpha = a - \frac{h'(a)(b-a)^2}{2(h(b)-h(a))-h'(a)(b-a)}\label{eq:linesearch:impl:interpolation:qudratic}
+\end{equation}
+It is also possible to apply this interpolation procedure repeatedly\footnote{Not to be done; only used to seed a step size}\footnote{Also the use of a cubic interpolator is possible\cite{nonLinOptimerung, Nocedal}. Haben wir zwar implementiert wird aber nicht genutzt.}.
+But the implementation must also use some safeguard in the case the interpolation fails.
+% TODO: explanation of interpolations safeguard constructs is missing
+
+\subsubsection{Backtracking Line search}\label{ssec:line:backtracking}
+% TODO: What about the bracketing phase and the bisection phase mentioned in Nocedal?
+To ensure algorithmically that the step size is neither to larger nor to small the backtracking line search algorithm is used.
+In general the search will start with a (comparatively large) initial value for the step size and shrink the step size by \(\tau\in (0,1) \).
+% TODO: description of the algorithm is still missing.
+To start the line search we begin with an initial step size \(\alpha_0\) and limit the step size \(\alpha\) to a maximum value.
+It could also be used a lower bound to not do an infinitely small step size (won't benefit from such a small step size)
+To define the Armijo condition within the algorithm define \(t\equiv -c\cdot m\).
+If the Armijo condition \cref{eq:linesearch:armijo} is already fulfilled for the seeding step size, we will increase the step size by \(1/\tau\) while the Armijo condition is satisfied and the maximum step size is not exceeded to prevent very small step sizes.
+The substitution rule for the new step size is thus \(\frac{\alpha}{\tau}\rightarrow\alpha\)
+
+In the other case where the Armijo-Condition is not satisfied, the step size is reduced by \(\tau\) until the condition is fulfilled.
+To prevent the algorithm from consuming too much time on finding the approximate minimum along the line, the number of iterations is limited.
+To improve this reduction of the step size, use an interval with upper and lower bounds which will be changed on each iteration, where the upper bound will be set on the currently tried step size if the Armijo condition is violated.
+It is also possible to activate further conditions to check for.
+% TODO: What about the usage of the (strong) Wolfe condition to enhance the line search?
+% TODO: correct the line search implementation to use the (strong) wolfe condition!
+
+After finding a step size which fulfills the Armijo condition, we will try to fulfill the Wolfe condition.
+While the Wolfe condition is not satisfied increase the step size by \(\frac{\alpha}{\tau}\rightarrow\alpha\).
+When intervals are used and the Wolfe condition is violated we will set a new lower bound to the currently used step size
+As soon as the Wolfe condition is satisfied the iteration could be stopped and the step size is to be returned.
+These procedures are in accordance with\cite{nonLinOptimerung}.
+
+When a step a suitable step size is found, which fulfils all the required conditions the value is returned to the optimiser to perform the iteration step and start from begin with determining a new direction to search for the minimum of the log-likelihood.
+
+
+% TODO: not sure whether this here is right place to mention it.
+Nevertheless, this algorithm will still run into trouble if the search direction approaches a normal direction of the gradient.
+In this case it won't be possible to make any real progress\cite{nonLinOptimerung, Nocedal}.
+An possibility to solve this is to fallback to raw steepest descent implementation when approaching orthogonality as this cannot happen for \(\vec{p}_\text{k} = -\grad f(\vec{x}_\text{k})\).
+If we could hold the search direction away from orthogonality then the Zoutendijk condition\cite[30-62]{Nocedal} implies
+\begin{equation}
+    \cos^2 \theta_{\text{k}}\norm{\grad f(\vec{x}_\text{k})}^2 \rightarrow 0\label{eq:zoutendijk}
+\end{equation}
+and therefore the convergence of optimisation algorithm.

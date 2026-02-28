@@ -1,0 +1,49 @@
+%! suppress = RedundantEscape
+\input{listings-python.prf}
+\RequirePackage{xcolor}
+
+% Some pyCharm color definitions
+\definecolor{pydeforange}{HTML}{FFCD66}
+\definecolor{pydefwhite}{HTML}{A9B7C6}
+\definecolor{pyviolett}{HTML}{8888C6}
+\definecolor{pyorange}{HTML}{CC7872}
+\definecolor{pyargred}{HTML}{AA4926}
+\definecolor{pycomwhite}{HTML}{808080}
+\definecolor{pygreen}{HTML}{6A8759}
+\definecolor{pynumblue}{HTML}{6897BB}
+
+\lstdefinestyle{styjava}{
+    language=Java,
+    numbers=left,
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    keywordstyle=\color{blue},
+    identifierstyle=\color{cyan},
+}
+
+\lstdefinestyle{stypython}{
+    language=Python,
+%basicstyle=\normalsize\ttfamiliy,
+%basicstyle=\ttfamiliy,
+    numbers=left,
+% color style
+    commentstyle=\color{pycomwhite},
+    stringstyle=\color{pygreen},
+    keywordstyle=\color{pyorange}, % core keyword
+    keywordstyle={[2]\color{pyviolett}}, % built-ins
+    identifierstyle=\color{pyviolett},
+%numberstyle=\color{pynumblue},
+    frame=single,
+    breaklines=true,
+}
+
+\lstset{literate=%
+    {Ö}{{\"O}}1
+    {Ä}{{\"A}}1
+    {Ü}{{\"U}}1
+    {ß}{{\ss}}1
+    {ü}{{\"u}}1
+    {ä}{{\"a}}1
+    {ö}{{\"o}}1
+    {µ}{{$\mu$}}1
+}

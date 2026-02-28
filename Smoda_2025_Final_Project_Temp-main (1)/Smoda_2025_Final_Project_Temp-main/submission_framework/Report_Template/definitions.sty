@@ -1,0 +1,97 @@
+\newcommand*{\vorallem}{vor allem\xspace}
+\newcommand*{\Vorallem}{Vor allem\xspace}
+\newcommand*{\mailref}[1]{\href{mailto:#1}{#1}}
+\newcommand*{\ol}[1]{\overline{#1}}
+\newcommand*{\bzw}{~beziehungsweise\xspace}
+\newcommand*{\sd}{, so dass\xspace}
+\newcommand*{\Na}{\ce{^{22}Na}\xspace}
+\newcommand*{\Ba}{\ce{_{56}^{133}Ba}\xspace}
+\newcommand*{\Cs}{\ce{_{55}^{137}Cs}\xspace}
+\newcommand*{\timeCal}{Zeitkalibration\xspace}
+\sisetup{separate-uncertainty}
+\newcommand*{\bzgl}{ bzgl.\xspace}
+\newcommand*{\prompt}{ Prompt-Kurve\xspace}
+\newcommand*{\promptPl}{ Prompt-Kurven\xspace}
+\newcommand*{\oszi}{Oszilloskop\xspace}
+\@ifpackagelater{siunitx}{2023/07/31}{\sisetup{uncertainty-round-direction=up}}{\PackageWarning{siunitx}{Missing version}}
+\sisetup{round-precision=2}
+\newcommand{\Am}{\ce{_{95}^{241}Am}\xspace}
+\newcommand{\rectifyGen}{Rectify-Average-Kreises\xspace}
+\newcommand{\rectify}{Rectify-Average-Kreis\xspace}
+\newcommand{\alphaParticle}{\(\alpha\text{-Teilchen}\)\xspace}
+\@ifpackagelater{siunitx}{2023/07/31}{
+    \sisetup{uncertainty-descriptors={stat,sys}}
+    \sisetup{uncertainty-descriptor-mode=subscript}
+    \sisetup{retain-zero-uncertainty}
+}
+{
+    \PackageWarning{siunitx}{Missing version}
+    \sisetup{parse-numbers=false}
+}
+\sisetup{range-phrase = --}
+\newcommand{\DMM}{DMM\xspace}
+\newcommand{\OPV}{Operationvsverstärker\xspace}
+\newcommand{\CSA}{ladungsempfindlicher Verstärker\xspace}
+\newcommand{\shaper}{pulsformender Verstärker\xspace}
+\newcommand{\Oszi}{Oszillograph\xspace}
+\newcommand{\internGlsShort}[1]{%
+    \ifthenelse{\equal{\glsentrytype{#1}}{acronym}}{%
+        \acrshort{#1}%
+    }%
+    {%
+        \glstext{#1}%
+    }%
+}%
+\newcommand{\myglsgen}[1]{%
+    \glsdoifexists{#1}%
+    {%
+        \ifglsused{#1}{%
+            \internGlsShort{#1}%
+        }%
+        {%
+            \glsuseri{#1}~(\internGlsShort{#1})%
+            \glsunset{#1}%
+        }%
+    }%
+}%
+\newcommand{\myglsgenAlt}[1]{%
+    \glsdoifexists{#1}%
+    {%
+        \ifglsused{#1}{%
+            \glsuseri{#1}%
+        }%
+        {%
+            \glsuseri{#1}%
+            \glsunset{#1}%
+        }%
+    }%
+}%
+\newcommand{\CSAGen}{ladungsempfindlichen Verstärkers\xspace}
+\newcommand{\ShaperGen}{impulsformenden Verstärkers\xspace}
+\newcommand{\pixel}{Pixeldetektor\xspace}
+\newcommand{\FEIGen}{FE-I4-Auslesechips\xspace}
+\newcommand{\FE}{FE-I4-Auslesechip\xspace}
+\newcommand*{\textLagrangeDensity}{\matchcal{L}}
+\DeclareMathOperator{\lagrDensity}{\mathcal{L}}
+\DeclareMathOperator{\Laplace}{\mathcal{L}}
+\DeclareMathOperator{\CrossDot}{\times}
+\DeclareMathOperator{\HamiltonDensity}{\mathscr{H}}
+\DeclareMathOperator{\Identity}{\mathbf{1}}
+\DeclareMathOperator{\convolute}{\times}
+\DeclareMathOperator{\correlate}{\times}
+\DeclareMathOperator{\landauOrder}{\mathcal{(O)}}
+% \newcommand{\order}[1]{\landauOrder (#1)}
+\newcommand*{\identity}[1]{\Identity_{#1}}
+% \DeclareMathOperator{\erf}{erf}
+\newcommand*{\uncertAngle}{1}
+\newcommand*{\uncertThickness}{\pm0.1}
+\newcommand*{\spectrumInterval}{ Die Fehlerbalken sind in Rot dargestellt.}
+\newcommand*{\bfgsNormFactor}{\vec{y}_\text{k}^\text{T}\vec{s}_\text{k}}
+\newcommand{\likelihood}{\mathcal{L}}
+\newcommand{\nllf}{-2\log\likelihood}
+% TODO You will need to change this!
+\newcommand*{\firstAuthor}{Dominik Cedric Fischer}
+\newcommand*{\secondAuthor}{Melis Kuşkapan}
+\newcommand*{\firstMail}{s6dkfisc@uni-bonn.de}
+\newcommand*{\immatriculation}{3445771}
+

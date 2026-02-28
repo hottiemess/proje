@@ -1,0 +1,15 @@
+%! Author = dominikfischer
+%! Date = 2026-02-11
+% contains additional latex code for the full derivation of the bfgs update strategy which should be left out
+Upfront it is necessary to make a particular choice to be reasoned later.
+For the rank 1 update we will choose \(\vec{u} = \vec{y}_\text{k}\) and \(\vec{v} = B_\text{k}\vec{s}_\text{k}\).
+We will here apply the secant equations to \textbf{both} sides of \cref{eq:bfgs:rank:update} where we will write the outer product of the vectors directly as a matrix.
+\begin{align}
+    B_{\text{k+1}}\vec{s}_{\text{k}} &= \vec{y}_\text{k}\nonumber\\
+    B_\text{k}\vec{s}_\text{k} + U_{\text{k}}\vec{s}_{\text{k}} + V_{\text{k}}\vec{s}_{\text{k}} &= \vec{y}_{\text{k}}\nonumber\\
+    &= \vec{v}(1+\beta\vec{v}^\text{T}\vec{s}_\text{k}) + \alpha\vec{u}\vec{u}^{\text{T}}\vec{s}_{\text{k}}\nonumber\\
+    \Rightarrow \vec{v}(1+\beta\vec{v}^\text{T}\vec{s}_\text{k}) = \vec{u}(1-\alpha\vec{u}^\text{T}\vec{s}_\text{k}) = \text{const} = 0\nonumber\\
+    \beta\vec{v}^{\text{T}}\vec{s}_{\text{k}} = -1 &\wedge 1 = \alpha\vec{v}^{\text{T}}\vec{s}_{\text{k}}\nonumber\\
+    \Rightarrow \beta = -\frac{1}{\vec{s}_\text{k}^\text{T}B_\text{k}\vec{s}_\text{k}} &\wedge \alpha = \frac{1}{\vec{y}_\text{k}^\text{T}\vec{s}_\text{k}}\nonumber
+\end{align}
+In the last step it was also used that w.r.t.\ Schwartz theorem for partial derivatives the hessian matrix should be symmetric.\footnote{This calculation could also been done with a constant other than 0 but would be more complicated then.}

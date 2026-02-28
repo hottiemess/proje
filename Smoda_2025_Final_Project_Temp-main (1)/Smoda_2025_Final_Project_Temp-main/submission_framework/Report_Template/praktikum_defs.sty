@@ -1,0 +1,16 @@
+%\renewcommand{\marginpar}{\marginnote}
+\@ifpackageloaded{ifthen}{\typeout{ifthen was already load}}{\RequirePackage{ifthen}}
+\@ifpackageloaded{Praktikum}{\typeout{Praktikum was already load}}{\RequirePackage{Praktikum}}
+%\usepackage{Praktikum}
+\newcommand{\finalFigure}{\todo{Es muss noch die finale/endgültige Abbildung erzeugt werden.}}
+\newcommand{\finalOuterFigure}{Test}
+\newcommand{\firstCaption}[1][Caption]{\let\marginpar\marginnote\PackageWarning{Praktikum}{falsche Überschrift}\caption{#1\todo{Neue Tabelle; diese muss noch überarbeitet und mit einer Überschrift versehen werden}}}
+%\ifthenelse{\equal{\ThesisFloat}{Redefined}}{
+%    \renewcommand{\firstCaption}[1][Caption]{\caption{#1\todo{Neue Tabelle; diese muss noch überarbeitet und mit einer Überschrift versehen werden}}}
+%}
+\ifthenelse{\equal{\ThesisFloat}{Redefined}}{
+    \typeout{Falsed}
+    \renewcommand{\firstCaption}[1][Caption]{\caption{#1\todo{Unpassende Überschrift}}}
+}{\typeout{trued}}
+\newcommand{\Dgl}{Differentialgleichung\xspace}
+

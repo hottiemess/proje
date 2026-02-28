@@ -1,0 +1,20 @@
+%! Author = dominikfischer
+%! Date = 2026-02-22
+
+\subsection{Newton}\label{ssec:procedure:newton:derivation}
+The class of newton algorithms comes from the Newton-Raphson procedure for finding the roots of function.
+To find a (local) minimum of a function it is first necessary to find a critical point, as at a local minimum is always a critical point.
+At such a critical point the gradient of the function to be optimised will vanish.
+So a Newton procedure for optimisation is concerned with finding the roots of the gradient.
+The iterative steps for the Newton-Raphson procedure could be derived from the Taylor-Expansion of the function up to first order.
+In the multidimensional case the first order derivative is replaced by the Jacobi-Matrix in terms of a matrix vector product with the point vector evaluate the expansion at.
+We want to find the roots of the gradient, so this effectively an expansion up to second order and we conclude for a Newtonian iteration step\cite{nonLinOptimerung, Nocedal}
+\begin{equation}
+    \vec{x}_{\text{n+1}} = \vec{x}_{\text{n}} -\alpha^{(k)} H_{\text{f}}^{-1}\cdot\grad f(\vec{x}_\text{n})\label{eq:newton:iteration}
+\end{equation}\footnote{Further information on this topic could be found in\cite{nonLinOptimerung, Nocedal}.}
+On the other hand, the major drawback of this procedure is, that it is necessary to calculate the full hessian on every iteration in addition to the gradient, which itself is already computational expensive.
+Additionally, we need to invert this \(N\time N\) matrix for $N$ degrees of freedom.
+This matrix inversion could on the other hand be written as solving N linear equation systems with each $N$ degrees of freedom.
+For this one could use the LU decomposition scheme as then one only needs to decompose the design matrix of the system once as this always the same and then only apply the solver for the decomposition $N$ times (on slightly different inhomogeneities).
+But after all this procedure would still be quite expensive.
+When trying to solve this drawback one comes to quasi-newton procedure like the BFGS algorithm.

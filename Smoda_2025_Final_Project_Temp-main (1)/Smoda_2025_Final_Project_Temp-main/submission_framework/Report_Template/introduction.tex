@@ -1,0 +1,36 @@
+%! Author = dominikfischer
+%! Date = 2026-02-10
+This project is aimed to program one part of a fitting framework.
+The implemented part should find the minimum/maximum of a provided likelihood function.
+This is done by optimisation.
+
+\paragraph{General}
+There are different numerical methods on how to find such a minimum.
+One of these possibility are the gradient descent or hill-climb methods.
+The basic idea of these algorithms is to follow the direction of largest descent (largest decrease of the value of the cost function) until a minimum is reached.
+There the approximation to such a \textbf{local} minimum is enhanced iteratively.
+On each iteration the direction of descent is evaluated and searched for minimum to improve the previous result.
+This is repeated until a required accuracy is reached or some other stopping condition is fulfilled.
+
+\paragraph{Aim}
+The Aim of this is to implement such an algorithm (in this case it is the BFGS Algorithm) and test it on two different (example) likelihood functions.
+First it is necessary to implement these likelihoods or to be more accurate their negative-log-likelihood.
+As constant values won't change the values of derivatives all terms within these nll-function which are either purely constant or do not depend on the parameters we are interested in will be dropped.
+The first (basic) test will be performed on a gaussian distribution.
+The likelihood itself could be defined here as
+\begin{equation}
+    \likelihood(\vec{\theta}) = \prod_{j}^{N}\frac{1}{(2\pi)^3 \sqrt{\det{V}}}\exp\left( -\frac{1}{2}(\vec{\theta}  - \vec{\mu}_\text{j})^\text{T}V^{-1}(\vec{\theta}  - \vec{\mu}_\text{j})\right)\label{eq:likelihood:gauss}
+\end{equation}
+These could be written as the negative-log-likelihood when dropping all constant terms.\footnote{Please keep in mind here that this representation is effectively a product over gaussian density functions for each data point (which is a vector consisting of six numbers)}
+\begin{equation}
+    \nllf(\vec{\theta}) = \sum_{j}^{N} (\vec{\theta} - \vec{\mu}_\text{j})^\text{T}V^{-1}(\vec{\theta} - \vec{\mu}_\text{j})\label{eq:nll:gauss}
+\end{equation}
+This is implemented by evaluating the log pdf for each data vector and then summing over these.
+For demonstration purposes a random dataset is generated from this distribution first.
+For the second part the rosenbrock function should be optimised.
+The negative log-likelihood of the rosenbrock function\footnote{This is the rosenbrock function itself.} is given by
+\begin{equation}
+    \nllf(\vec{\theta}) = \sum_{i=1}^{5} \left(100\cdot\left( \theta_{\text{i} + 1} - \theta_\text{i}^2\right )^2 + (1 - \theta_\text{i})^2 \right )\label{eq:intro:rosen}
+\end{equation}
+% TODO: implement and report the parts for the rosenbrock function.
+

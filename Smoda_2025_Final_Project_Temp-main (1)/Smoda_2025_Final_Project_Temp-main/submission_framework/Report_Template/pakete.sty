@@ -1,0 +1,66 @@
+% Hier werden einige Pakete eingebunden
+% Direkte Eingabe von ä usw.- ab TeX Live 2018 nicht mehr notwendig.
+% \usepackage[utf8]{inputenc}
+
+% Font Kodierung für die Ausgabe.
+\RequirePackage[T1]{fontenc}
+% Verschiedenste sprach-spezifische Extras.
+\RequirePackage[english]{babel}
+% Intelligente Anführungszeichen.
+\RequirePackage[autostyle=true]{csquotes}
+
+% um Leerzeichen am Ende von eigenen Makros setzen zu können
+\RequirePackage{xspace}
+
+% Mathematik-Module, Erweiterung des Mathematik-Modus
+\RequirePackage{mathtools}
+\RequirePackage{amsmath}
+\RequirePackage[ISO]{diffcoeff}
+
+% Schönere Schriftart.
+\RequirePackage{newtxtext}
+% Schönere Schriftart.
+\RequirePackage{newtxmath}
+
+% Gleitobjekte wie Tabellen und Abbildungen
+\RequirePackage{graphicx}
+% Literaturzitate
+\RequirePackage[backend=biber, style=numeric]{biblatex}
+
+% Hyperlinks, also klickbare Elemente zum Beispiel zur Navigation
+\RequirePackage{hyperref}
+% Verbesserte Verweise auf Abbildungen
+\RequirePackage[all]{hypcap}
+
+% Intelligentes Setzen von Zahlen und Einheiten
+\RequirePackage{siunitx}
+
+% verbesserte Verweise
+\RequirePackage{cleveref}
+
+% Einige KOMA-Script-Optionen
+% Schriftgröße und Papierformat setzen.
+\KOMAoptions{fontsize=11pt, paper=a4}
+
+% Parameter mit dem man den Seitenrand ändern kann.
+\KOMAoptions{DIV=14}
+
+% Abbildungs- und Tabellenverzeichnis sollen im Inhaltsverzeichnis geführt werden
+\KOMAoptions{listof=totoc}
+
+% nach Norm DIN-1421 kommt nach der Nummerierung von Gliederungs-Elementen kein Punkt
+% Dies muss noch korrigiert werden
+\KOMAoptions{numbers=noendperiod}
+
+
+% Intelligentes Setzen von Zahlen und Einheiten
+
+% Makros
+% Hätten auch in einer eigenen Datei definiert werden können, habe ich mir hier aber gespart
+% Extra delimiter Paare
+% TODO: reactivate when physics package not in use!
+% \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+
+% Ich bin mir nicht sicher, ob dieser Befehl nach den Anpassungen überhaupt noch verwendet wird.
+\newcommand{\tb}{\textbackslash}
+\newcommand{\LaTeXSpace}{\LaTeX\xspace}

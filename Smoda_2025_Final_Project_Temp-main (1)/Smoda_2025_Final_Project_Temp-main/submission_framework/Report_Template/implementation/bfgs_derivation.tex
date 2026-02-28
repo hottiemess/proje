@@ -1,0 +1,67 @@
+%! Author = dominikfischer
+%! Date = 2026-02-10
+
+\subsubsection{The Hessian matrix}
+% TODO: some parts of this paragraph needs to used anyway;
+The BFGS update strategy could be derived from the Newton procedure \cref{eq:newton:iteration}.
+This could be transformed such that we arrive at the from \(B_\text{k}\cdot p_\text{k} = -\grad f(x_\text{k})\).
+Here \(B_\text{k}\) is not the hessian but an approximation to it and \(p_\text{k}\) is the search direction of the current iteration step.
+These formulas for the step \(k\) and the step \(k+1\) are not independent.
+% update accounts for the curvature at the current iteration
+So it is possible to derive the secant equation\footnote{Also known as the Quasi-Newton equation.}\cite[175-216]{nonLinOptimerung}\cite[136-167]{Nocedal}:
+\begin{align}
+    B_\text{k+1} (x_\text{k+1} - x_\text{k}) &= \grad f(x_\text{k+1}) - \grad f(x_\text{k})\nonumber\\
+    \Leftrightarrow B_{\text{k+1}}\cdot\vec{s}_{\text{k}} &= \vec{y}_{\text{k}}\label{eq:bfgs:secant}\\
+    \vec{s}_{\text{k}} &= \vec{x}_{\text{k+1}}-\vec{x}_{\text{k}}\nonumber\\
+    \vec{y}_{\text{k}} &= \grad f(\vec{x}_\text{k+1}) - \grad f(\vec{x}_\text{k})\nonumber
+\end{align}
+This could also be seen by using the taylor expansion of \(\grad f\) or \(f\).
+As the Hessian could be defined as following \((D\grad f)_\text{i} = \nabla((\nabla f)_\text{i})\rightarrow H_\text{f}\).
+If we drop the requirement for positive definiteness of the approximated hessian matrix, we could use the so-called Rank 1 update.
+This means that we add to a previous approximation of the hessian matrices of rank 1\cite[176-216]{nonLinOptimerung}.
+But we will try to use two (symmetric) rank 1 matrices which results in a rank 2 update strategy.
+This update strategy will only preserve the positive definiteness of the Hessian if the curvature condition\(\vec{s}_\text{k}^\text{T}\cdot\vec{y}_\text{k} = \left\langle \vec{s}_\text{k}, \vec{y}_\text{k} \right\rangle > 0\) is fulfilled\cite[136-167]{Nocedal}\footnote{Would always be satisfied for a \textbf{convex} function.}.
+Therefore, we must require at least Wolfe conditions (see \cref{ssec:impl:line})
+The update formula would look as follows:
+\begin{equation}
+    B_{\text{k+1}} = B_{\text{k}} + \alpha\cdot\vec{u}\vec{u}^{\text{T}} + \beta\cdot\vec{v}\vec{v}^{\text{T}}\label{eq:bfgs:rank:update}
+\end{equation}
+But how to determine the vectors \(\vec{u}\) and \(\vec{v}\) as well as the coefficients in \cref{eq:bfgs:rank:update}?\footnote{Please note that the product of a vector and it's transposed is to be understand as the outer product of the vector with itself and not as an inner product}
+It is as simple as applying the secant equation \cref{eq:bfgs:secant} to it.\footnote{I won't recite all the steps in between here as this would overreach the page limit definitely.}
+% comment this coefficients derivation out if no longer needed
+\input{implementation/bfgs_coefficients}
+So as the final result we get for these quantities:
+\begin{align}
+    \vec{u} &= \vec{y}_\text{k}\nonumber\\
+    \vec{v} &= B_\text{k}\vec{s}_\text{k}\nonumber\\
+    \beta &= -\frac{1}{\vec{s}_\text{k}^\text{T}B_\text{k}\vec{s}_\text{k}}\nonumber\\
+    \alpha &= \frac{1}{\vec{y}_\text{k}^\text{T}\vec{s}_\text{k}}\nonumber
+\end{align}
+Now apply this onto the update formula \cref{eq:bfgs:rank:update}
+\begin{equation}
+    B_{\text{k+1}} = B_{\text{k}} + \frac{\vec{y}_\text{k}\vec{y}_\text{k}^\text{T}}{\vec{y}_\text{k}^\text{T}\vec{s}_\text{k}} - \frac{B_\text{k}\vec{s}_\text{k}\vec{s}_\text{k}^\text{T}B_\text{k}}{\vec{s}_\text{k}^\text{T}B_\text{k}\vec{s}_\text{k}}\label{eq:bfgs:strategy}
+\end{equation}
+% FIXME: this sentence seems to make no sense.
+But this formula could only be used for the update step.
+
+\subsubsection{The inverse Hessian}
+For the gradient descent iteration the inverse hessian is required and not the hessian itself.\footnote{Instead of using the inverse the hessian could be used and the search direction is then to be estimated by solving a linear equation system\cite{nonLinOptimerung, Nocedal}.}
+Fortunately, it is possible to approximate the inverse hessian by a similar update formula.
+To achieve this the \enquote{Sherman-Morisson-Woodburry-Formula}\cite[176-216]{nonLinOptimerung}\cite[136-167]{Nocedal} is to be used.
+The meaning of this is:
+\(A + \vec{v}\vec{v}^\text{T}\) is invertible if and only if \(1 + \vec{v}^\text{T}A^{-1}\vec{v}\neq 0\).
+In this case (which is fulfilled for our update formula) we can use for the inverse:
+\begin{equation}
+    (A + \vec{v}\vec{v}^\text{T})^{-1} = A^{-1} - \frac{A^{-1}\vec{v}\vec{v}^\text{T}A^{-1}}{1+\vec{v}^\text{T}A^{-1}\vec{v}}\label{eq:sherman}
+\end{equation}
+This formula could be applied onto our rank 1 update \cref{eq:bfgs:strategy}
+% comment this out and give only the final result if necessary?
+\input{implementation/bfgs_update_inverse}
+So we have for the final update formula\cite[176-216]{nonLinOptimerung}:
+\begin{equation}
+    B_{\text{k+1}}^{-1} = B_{\text{k}}^{-1} + \frac{(\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}\vec{y}_\text{k} + \vec{y}_\text{k}^\text{T}\vec{s}_\text{k})(\vec{s}_\text{k}\vec{s}_\text{k}^\text{T})}{\bfgsNormFactor^2} - \frac{B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T} + \vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^\text{T}}{\bfgsNormFactor}\label{eq:bfgs:update:strategy}
+\end{equation}
+
+
+
+

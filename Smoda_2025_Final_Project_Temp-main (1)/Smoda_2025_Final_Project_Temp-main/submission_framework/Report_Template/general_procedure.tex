@@ -1,0 +1,70 @@
+%! Author = dominikfischer
+%! Date = 2026-02-10
+The BFGS Algorithm and our implementation is following the general form of a gradient descent algorithm.
+So it is necessary to first introduce the general structure.
+
+\paragraph{Gradient Descent}
+A minimum or at least a critical point of \(f\) will fulfill \(\grad f = 0\).\footnote{For this necessary condition see e.g.\cite[14-23]{Nocedal}}
+We will do so by iteratively improving an already known approximation to the optimum.
+On each iteration we will search a for new local minimum starting from our currently best value along a direction \(\vec{p}\) (see also\cite{nonLinOptimerung, Nocedal}).
+
+At the start of each iteration a suitable search direction is computed to search for a minimum, but first check the gradient at the best current approximation and stop the iteration if a stopping condition is already fulfilled.
+Subsequently, a line search will be done to estimate the optimal step size.
+This is an optimisation algorithm which tries to minimise a function along a line in (parameter) space.
+% TODO: discuss the implementation used for the line search.
+We will take a closer look at this in \cref{ssec:impl:line} and discuss also the implementation used.
+These will optimise the value of \(f(\vec{x}_0 + \alpha\cdot\vec{p})\) in the positive definite parameter \(\alpha\), which is called the \enquote{step size}.
+Only an approximate line search will be used as trying more search directions is more effective than using the absolutely best step size for each direction\cite{Nocedal, nonLinOptimerung}.
+After estimating the step size, we could use this to perform the proper iteration step
+\begin{equation}
+    \vec{x}_{\text{k+1}} = \vec{x}_\text{k} + \alpha^\text{(k)}\cdot\vec{p}_\text{k}\label{eq:linesearch:step}
+\end{equation}
+The indices of the parameters \(\vec{x}\) and directions \(\vec{p}\) and the superscript of the step size \(\alpha\) indicate the iteration in this update formula.
+The provided code base will do exactly these steps, but these are implemented in separate functions.
+Their implementations will be discussed together with particular implemented algorithms in the upcoming sections \cref{ssec:bfgs,ssec:impl:line}.
+
+\paragraph{search direction}
+By definition the direction of the gradient of a (scalar) function is the direction of maximum descent of the functions values and so points locally in the direction of the maximum.
+Therefore, to search in the direction of the minimum we need a component opposite to the gradient, or more formal their angle must be \(> \SI{90}{\degree}\).
+Which is equivalent to the condition for the inner product \(\vec{p}^\text{T}\grad f < 0\)\footnote{Derivations of these aspects could be found at\cite{nonLinOptimerung,Nocedal}}.
+But in opposite to the gradient of our function which could be calculated at least numerically if the function is differentiable\footnote{which is always the case for a smooth function} we could not directly calculate the search direction\footnote{meaning: it is not uniquely defined.}.
+On the other hand, we know that the gradient\footnote{The implementations will calculate the gradient (and the hessian) by numerical derivatives. A central finite difference approach is chosen. Information on calculating the coefficients used by this method could be found at\cite{Nocedal, nonLinOptimierung, findiff, numdifftoolsguides}.} points locally to a maximum.
+Therefore, we need a mapping from the gradient to the search direction.
+This mapping could be chosen linear, say more accurately an endomorphism.
+Such an endomorphism could always be presented by a \(N\times N\) matrix.
+Thus, we could always write our search direction as
+\begin{equation}
+    \vec{p} = -B\cdot\grad f\label{eq:general:search:direction}
+\end{equation}
+In \cref{eq:general:search:direction} we use the \textbf{positive definite} matrix \(B\) and the matrix-vector-product to perform the mapping from the computed gradient to the search direction.
+By taking the inner product of the search direction with the gradient and using the positive definiteness of \(B\) one immediately sees that the condition for searching for a minimum is fulfilled.
+The choice of a positive definite matrix, e.g.\ the Hesse matrix or it's inverse is quite natural, as the Hesse matrix at an local minimum is (at least) positive semidefinite\cite[15, 22]{Nocedal}
+But when talking about the search direction one must always keep in mind that it will only lead \textbf{locally} to a minimum.
+When implementing the mapping from the gradient to the search direction we decided to not normalise the search direction or the gradient to unit length.
+
+\paragraph{Examples}
+In the simplest possible case, this matrix could be chosen to be the identity \(B = \identity{N}\).
+This is the \enquote{traditional} gradient descent or hill climbing algorithm.
+Another choice which could be seen from the derivation in \cref{ssec:procedure:newton:derivation} and \cref{eq:newton:iteration} is to choose the inverse of the Hessian of \(f\) or at least an approximation to it.
+This particular choice will lead to the Newton and Quasi-Newton procedures for minimisation\cite{nonLinOptimerung,Nocedal}.
+Such a choice is the BFGS algorithm which will be implemented as the primary contribution to the project.
+The BFGS algorithm is a so called quasi-newton algorithm.
+So it could be necessary to talk first about the newton algorithm in \cref{ssec:procedure:newton:derivation}.
+
+\paragraph{Conclusion}
+The past paragraphs could be summarised to a recursive rule for iteratively improving our approximation of the optimum of \(f\).
+In each iteration we will start from some previously best value and calculate a search direction with respect to this value.
+Next, we will perform a (short) line search to get the approximately best step size to achieve the largest possible improvement onto the function \(f\).
+This new value for \(\vec{x}\) will be used as the starting value for the next iteration.
+So the updating in each iteration step could be summarised by \cref{eq:linesearch:step}
+
+But when to stop the iteration?
+The iteration could be stopped for a sufficiently small value of the gradient (e.g.\  it's components or it's norm)\cite[89]{nonLinOptimerung}.
+We decided to use a stopping condition onto the norm of the gradient \(\norm{\grad f} < \epsilon\).
+The parameter \(\epsilon = \num{1d-5}\) was chosen for this condition in our implementation but could off course be overridden when using the implementation.
+
+The implementation will feature some more aspects extracted into additional functions.
+These are needed to recompute the stopping condition or to keep track of the visited points in parameter space.
+The last one is used to visualize the behaviour of the algorithm.
+Furthermore, there is value view implemented for retrieval of the fitted parameters.
+This implementation is oriented as the corresponding one in the \verb|iminuit| framework.

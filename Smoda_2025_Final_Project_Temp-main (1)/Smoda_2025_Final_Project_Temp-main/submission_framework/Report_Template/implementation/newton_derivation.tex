@@ -1,0 +1,49 @@
+%! Author = dominikfischer
+%! Date = 2026-02-11
+
+\subsection{Newton Procedure}\label{ssec:procedure:newton:derivation}
+The Newton procedure for numerical optimisation could be derived form some more general thoughts.
+The analytical condition for a minimum is the existence of a critical point where the gradient would vanish.
+Thus, we are looking for the roots of the gradient of our \enquote{cost function}\footnote{Meaning: the negative log-likelihood. Will often use the more general terminology cost function in the follwing.}.
+% TODO: citation for this?
+Roots could be numerically estimated by the Newton-Raphson procedure, a fixed-point iteration.
+Usually this procedure could be derived from a taylor expansion up to (including) first order (in our case one should expand the gradient and thus the function to optimise until including second order)
+For a multivariate function we could describe the expansion by
+\begin{equation}
+    g(\vec{x} + \vec{h}) \approx g(\vec{x}) + \vec{h}\cdotp\grad g(\vec{x})+\order{h^2}\label{eq:newton:gradient:expansion}
+\end{equation}
+This could be rephrased for the usage in an algorithm which iteratively improves an approximation:
+\begin{equation}
+    \Leftrightarrow g(\vec{x}_{n+1} \approx g(\vec{x}_\text{n}) + (\vec{x}_\text{n+1} - \vec{x}_\text{n})\cdot\grad g(\vec{x}_\text{n})) + \order{h^2}\label{eq:newton:gradient:expansion:iteration}
+\end{equation}
+
+Now we want to assume that \(\vec{x}_\text{n+1}\) is a root of \(g\).
+In this case we find:
+\begin{align}
+    0 = \stackrel{!}{=}g(\vec{x}_\text{n+1}) &= g(\vec{x}_\text{n+}) + (\vec{x}_\text{n+1} - \vec{x}_\text{n})\cdot\grad g(\vec{x}_\text{n}))\\
+    \Rightarrow \vec{x}_{\text{n+1}}\cdotp\gradient g(\vec{x}_\text{n}) &= g(\vec{x}_\text{n}) - \vec{x}_{\text{n}}\cdot\grad g(\vec{x}_\text{n})\\
+    \Rightarrow \vec{x}_{\text{n+1}} &= \vec{x}_{\text{n}} - J_{\text{g}}^{-1}g(\vec{x}_\text{n})\label{eq:newqton:raphson:general:step}
+\end{align}
+In the last step \cref{eq:newqton:raphson:general:step} the gradient was replaced by the more general jacobi-matrix.
+
+But our primary interest is not to find the roots of \(g = \grad f\), but to find the minimum of \(f\)
+So we will need to use the taylor expansion of \(f\) up to second order\cite{nonLinOptimerung,Nocedal}:
+\begin{equation}
+    f(\vec{x} + \vec{h}) \approx f(\vec{x}) + J_{\text{f}}(\vec{x})\vec{h} + \frac{1}{2}\vec{h}^{\text{T}}H_{\text{f}}\vec{h}+\order{h^3}\label{eq:newton:cost:expansion}
+\end{equation}
+From this follows immediately the Newton iteration for numerical optimisation\cite[91]{nonLinOptimerung}
+\begin{equation}
+    \vec{x}_{\text{n+1}} = \vec{x}_{\text{n}} -\alpha^{(k)} H_{\text{f}}^{-1}\cdot\grad f(\vec{x}_\text{n})\label{eq:newton:iteration}
+\end{equation}
+For investigations of the convergence behaviour\cite{nonLinOptimerung, Nocedal}.
+But it could not be guaranteed that the final result would be a minimum it could as well be a maximum as this procedure is not able to distinguish between maxima and minima of a function.
+Also, the found optimum is always just a local one and not necessarily a global.
+A major drawback of the newton procedure is that the calculation and inversion of the hesse matrix is computational expensive.
+
+\paragraph{Implementation notes}
+Within the code base also a implementation of the Newton procedure is provided.
+This is fitted into the skeleton of the bfgs procedure with uses a function to update the hessian.
+This update function is also used but with a different implementation.
+It is not a \enquote{update} but a full recomputation of the hessian with subsequently performed matrix inversion by LU-decomposition\footnote{The implementation of the LU decomposition without pivoting follows the \enquote{Computerphysik} lecture of the bachelor.}.
+
+

@@ -1,0 +1,16 @@
+findiff
+numpy
+scipy
+matplotlib
+iminuit
+numdifftools
+tqdm
+jacobi
+pymc
+arviz
+kafe2
+uproot
+pandas
+pandas-stubs
+vector
+typing-extensions

@@ -1,0 +1,11 @@
+%! Author = dominikfischer
+%! Date = 2026-02-11
+% Further latex code for the inversion of the hessian update formula!
+\begin{align}
+    B_\text{k+1}^{-1} &= \left( \Identity - \frac{\vec{s}_\text{k}\vec{y}_\text{k}^\text{T}}{\bfgsNormFactor}\right)B_\text{k}^{-1}\left( \Identity - \frac{\vec{y}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor}\right) + \frac{\vec{s}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor}|\text{expand}\nonumber\\
+    &= \left( \Identity - \frac{\vec{s}_\text{k}\vec{y}_\text{k}^\text{T}}{\bfgsNormFactor}\right)\left( B_\text{k}^{-1} - \frac{B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor}\right) + \frac{\vec{s}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor}\nonumber\\
+    &= B_\text{k}^{-1} - \frac{B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor} - \frac{\vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}}{\bfgsNormFactor} + \frac{\vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor^2} + \frac{\vec{s}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor}\nonumber\\
+    &= B_\text{k}^{-1} + \frac{\vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T}}{\bfgsNormFactor^2} + \frac{\vec{s}_\text{k}\vec{s}_\text{k}^\text{T} - B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T} - \vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}}{\bfgsNormFactor}|\text{symmetric}\nonumber\\
+    &= B_{\text{k}}^{-1} + \frac{(\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}\vec{y}_\text{k})(\vec{s}_\text{k}\vec{s}_\text{k}^\text{T}) + (\vec{y}_\text{k}^\text{T}\vec{s}_\text{k})(\vec{s}_\text{k}\vec{s}_\text{k}^\text{T})}{\bfgsNormFactor^2} - \frac{B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T} + \vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^\text{T}}{\bfgsNormFactor}\nonumber\\
+    &= B_{\text{k}}^{-1} + \frac{(\vec{y}_\text{k}^\text{T}B_\text{k}^{-1}\vec{y}_\text{k} + \vec{y}_\text{k}^\text{T}\vec{s}_\text{k})(\vec{s}_\text{k}\vec{s}_\text{k}^\text{T})}{\bfgsNormFactor^2} - \frac{B_\text{k}^{-1}\vec{y}_\text{k}\vec{s}_\text{k}^\text{T} + \vec{s}_\text{k}\vec{y}_\text{k}^\text{T}B_\text{k}^\text{T}}{\bfgsNormFactor}
+\end{align}
